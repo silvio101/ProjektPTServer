@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="PTMessengerEntites.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="PTMessengerEntitesStoreContainer">
+    <EntitySet Name="TLastLogin" EntityType="PTMessengerEntites.Store.TLastLogin" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TUsers" EntityType="PTMessengerEntites.Store.TUsers" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="FK__TLastLogi__TLast__1273C1CD" Association="PTMessengerEntites.Store.FK__TLastLogi__TLast__1273C1CD">
+      <End Role="TUsers" EntitySet="TUsers" />
+      <End Role="TLastLogin" EntitySet="TLastLogin" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="TLastLogin">
+    <Key>
+      <PropertyRef Name="TLastLogin_id" />
+    </Key>
+    <Property Name="TLastLogin_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TLastLogin_TUserID" Type="int" Nullable="true" />
+    <Property Name="TLastLogin_TS" Type="binary" StoreGeneratedPattern="Computed" Nullable="false" MaxLength="8" />
+    <Property Name="TLastLogin_UserIP" Type="varchar" Nullable="true" MaxLength="30" />
+  </EntityType>
+  <EntityType Name="TUsers">
+    <Key>
+      <PropertyRef Name="TUsers_id" />
+    </Key>
+    <Property Name="TUsers_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TUsers_login" Type="varchar" Nullable="false" MaxLength="50" />
+    <Property Name="TUsers_email" Type="varchar" Nullable="false" MaxLength="100" />
+    <Property Name="TUsers_passwd" Type="varchar" Nullable="false" MaxLength="128" />
+    <Property Name="TUsers_desc" Type="varchar" Nullable="true" MaxLength="300" />
+    <Property Name="TUser_imie" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="TUser_nazwisko" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="TUser_lock" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <Association Name="FK__TLastLogi__TLast__1273C1CD">
+    <End Role="TUsers" Type="PTMessengerEntites.Store.TUsers" Multiplicity="0..1" />
+    <End Role="TLastLogin" Type="PTMessengerEntites.Store.TLastLogin" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TUsers">
+        <PropertyRef Name="TUsers_id" />
+      </Principal>
+      <Dependent Role="TLastLogin">
+        <PropertyRef Name="TLastLogin_TUserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="PTMessengerEntites" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="TLastLogin">
+          <Key>
+            <PropertyRef Name="TLastLogin_id" />
+          </Key>
+          <Property Name="TLastLogin_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TLastLogin_TUserID" Type="Int32" />
+          <Property Name="TLastLogin_TS" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="TLastLogin_UserIP" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="TUsers" Relationship="Self.FK__TLastLogi__TLast__1273C1CD" FromRole="TLastLogin" ToRole="TUsers" />
+        </EntityType>
+        <EntityType Name="TUsers">
+          <Key>
+            <PropertyRef Name="TUsers_id" />
+          </Key>
+          <Property Name="TUsers_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TUsers_login" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="TUsers_email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="TUsers_passwd" Type="String" MaxLength="128" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="TUsers_desc" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="TUser_imie" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TUser_nazwisko" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="TLastLogin" Relationship="Self.FK__TLastLogi__TLast__1273C1CD" FromRole="TUsers" ToRole="TLastLogin" />
+          <Property Name="TUser_lock" Type="String" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__TLastLogi__TLast__1273C1CD">
+          <End Role="TUsers" Type="Self.TUsers" Multiplicity="0..1" />
+          <End Role="TLastLogin" Type="Self.TLastLogin" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TUsers">
+              <PropertyRef Name="TUsers_id" />
+            </Principal>
+            <Dependent Role="TLastLogin">
+              <PropertyRef Name="TLastLogin_TUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="PTMessengerEntitiesModel" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="TLastLogin" EntityType="Self.TLastLogin" />
+          <EntitySet Name="TUsers" EntityType="Self.TUsers" />
+          <AssociationSet Name="FK__TLastLogi__TLast__1273C1CD" Association="Self.FK__TLastLogi__TLast__1273C1CD">
+            <End Role="TUsers" EntitySet="TUsers" />
+            <End Role="TLastLogin" EntitySet="TLastLogin" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="PTMessengerEntitesStoreContainer" CdmEntityContainer="PTMessengerEntitiesModel">
+    <EntitySetMapping Name="TLastLogin">
+      <EntityTypeMapping TypeName="IsTypeOf(PTMessengerEntites.TLastLogin)">
+        <MappingFragment StoreEntitySet="TLastLogin">
+          <ScalarProperty Name="TLastLogin_id" ColumnName="TLastLogin_id" />
+          <ScalarProperty Name="TLastLogin_TUserID" ColumnName="TLastLogin_TUserID" />
+          <ScalarProperty Name="TLastLogin_TS" ColumnName="TLastLogin_TS" />
+          <ScalarProperty Name="TLastLogin_UserIP" ColumnName="TLastLogin_UserIP" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TUsers">
+      <EntityTypeMapping TypeName="IsTypeOf(PTMessengerEntites.TUsers)">
+        <MappingFragment StoreEntitySet="TUsers">
+          <ScalarProperty Name="TUsers_id" ColumnName="TUsers_id" />
+          <ScalarProperty Name="TUsers_login" ColumnName="TUsers_login" />
+          <ScalarProperty Name="TUsers_email" ColumnName="TUsers_email" />
+          <ScalarProperty Name="TUsers_passwd" ColumnName="TUsers_passwd" />
+          <ScalarProperty Name="TUsers_desc" ColumnName="TUsers_desc" />
+          <ScalarProperty Name="TUser_imie" ColumnName="TUser_imie" />
+          <ScalarProperty Name="TUser_nazwisko" ColumnName="TUser_nazwisko" />
+          <ScalarProperty Name="TUser_lock" ColumnName="TUser_lock" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
