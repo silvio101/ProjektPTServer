@@ -14,12 +14,6 @@ namespace PT_MessengerServer
     
     public partial class TUsers
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public TUsers()
-        {
-            this.TLastLogin = new HashSet<TLastLogin>();
-        }
-    
         public int TUsers_id { get; set; }
         public string TUsers_login { get; set; }
         public string TUsers_email { get; set; }
@@ -27,9 +21,6 @@ namespace PT_MessengerServer
         public string TUsers_desc { get; set; }
         public string TUser_imie { get; set; }
         public string TUser_nazwisko { get; set; }
-        public string TUser_lock { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TLastLogin> TLastLogin { get; set; }
+        public bool TUser_lock { get; set; }
     }
 }

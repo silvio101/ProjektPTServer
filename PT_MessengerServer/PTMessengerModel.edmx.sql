@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 06/09/2017 18:47:07
+-- Date Created: 06/17/2017 00:59:09
 -- Generated from EDMX file: D:\=MAKING OF=\PT_MessengerServer\PT_MessengerServer\PTMessengerModel.edmx
 -- --------------------------------------------------
 
@@ -40,7 +40,7 @@ GO
 CREATE TABLE [dbo].[TLastLogin] (
     [TLastLogin_id] int IDENTITY(1,1) NOT NULL,
     [TLastLogin_TUserID] int  NULL,
-    [TLastLogin_TS] timestamp  NOT NULL,
+    [TLastLogin_TS] binary(8)  NOT NULL,
     [TLastLogin_UserIP] varchar(30)  NULL
 );
 GO
@@ -54,7 +54,7 @@ CREATE TABLE [dbo].[TUsers] (
     [TUsers_desc] varchar(300)  NULL,
     [TUser_imie] nvarchar(max)  NULL,
     [TUser_nazwisko] nvarchar(max)  NULL,
-    [TUser_lock] bit NOT NULL DEFAULT 0
+    [TUser_lock] bit  NOT NULL
 );
 GO
 

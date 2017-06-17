@@ -33,7 +33,7 @@
     <Property Name="TUsers_desc" Type="varchar" Nullable="true" MaxLength="300" />
     <Property Name="TUser_imie" Type="nvarchar(max)" Nullable="true" />
     <Property Name="TUser_nazwisko" Type="nvarchar(max)" Nullable="true" />
-    <Property Name="TUser_lock" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="TUser_lock" Type="bit" Nullable="false" />
   </EntityType>
   <Association Name="FK__TLastLogi__TLast__1273C1CD">
     <End Role="TUsers" Type="PTMessengerEntites.Store.TUsers" Multiplicity="0..1" />
@@ -72,8 +72,7 @@
           <Property Name="TUsers_desc" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
           <Property Name="TUser_imie" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="TUser_nazwisko" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="TLastLogin" Relationship="Self.FK__TLastLogi__TLast__1273C1CD" FromRole="TUsers" ToRole="TLastLogin" />
-          <Property Name="TUser_lock" Type="String" Nullable="false" />
+          <Property Name="TUser_lock" Type="Boolean" Nullable="false" />
         </EntityType>
         <Association Name="FK__TLastLogi__TLast__1273C1CD">
           <End Role="TUsers" Type="Self.TUsers" Multiplicity="0..1" />
