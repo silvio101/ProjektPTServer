@@ -27,5 +27,6 @@ namespace PT_MessengerServer
     
         public virtual DbSet<TLastLogin> TLastLogin { get; set; }
         public virtual DbSet<TUsers> TUsers { get; set; }
+        public virtual DbSet<TMessage> TMessageSet { get; set; }
     }
 }

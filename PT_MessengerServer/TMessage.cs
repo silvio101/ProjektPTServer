@@ -12,14 +12,15 @@ namespace PT_MessengerServer
     using System;
     using System.Collections.Generic;
     
-    public partial class TLastLogin
+    public partial class TMessage
     {
-        public int TLastLogin_id { get; set; }
-        public System.DateTime TLastLogin_TS { get; set; }
-        public string TLastLogin_UserIP { get; set; }
-        public int TLastLogin_TUsers_id { get; set; }
-        public bool TLastLogin_Success { get; set; }
+        public int TMessage_id { get; set; }
+        public string TMessage_text { get; set; }
+        public System.DateTime TMessage_ts { get; set; }
+        public int TMessage_src { get; set; }
+        public int TMessage_dst { get; set; }
     
-        public virtual TUsers User { get; set; }
+        public virtual TUsers User_src { get; set; }
+        public virtual TUsers User_dst { get; set; }
     }
 }

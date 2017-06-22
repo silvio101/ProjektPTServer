@@ -91,6 +91,9 @@
     <Compile Include="TLastLogin.cs">
       <DependentUpon>PTMessengerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="TMessage.cs">
+      <DependentUpon>PTMessengerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="TUsers.cs">
       <DependentUpon>PTMessengerModel.tt</DependentUpon>
     </Compile>

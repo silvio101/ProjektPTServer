@@ -8,9 +8,18 @@
   <EntityContainer Name="PTMessengerEntitesStoreContainer">
     <EntitySet Name="TLastLogin" EntityType="PTMessengerEntites.Store.TLastLogin" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="TUsers" EntityType="PTMessengerEntites.Store.TUsers" store:Type="Tables" Schema="dbo" />
-    <AssociationSet Name="FK__TLastLogi__TLast__1273C1CD" Association="PTMessengerEntites.Store.FK__TLastLogi__TLast__1273C1CD">
-      <End Role="TUsers" EntitySet="TUsers" />
+    <EntitySet Name="TMessageSet" EntityType="PTMessengerEntites.Store.TMessageSet" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="TLastLoginTUsers" Association="PTMessengerEntites.Store.TLastLoginTUsers">
       <End Role="TLastLogin" EntitySet="TLastLogin" />
+      <End Role="TUsers" EntitySet="TUsers" />
+    </AssociationSet>
+    <AssociationSet Name="TUsersTMessage_src" Association="PTMessengerEntites.Store.TUsersTMessage_src">
+      <End Role="TUsers" EntitySet="TUsers" />
+      <End Role="TMessage" EntitySet="TMessageSet" />
+    </AssociationSet>
+    <AssociationSet Name="TUsersTMessage_dst" Association="PTMessengerEntites.Store.TUsersTMessage_dst">
+      <End Role="TUsers" EntitySet="TUsers" />
+      <End Role="TMessage" EntitySet="TMessageSet" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="TLastLogin">
@@ -18,9 +27,10 @@
       <PropertyRef Name="TLastLogin_id" />
     </Key>
     <Property Name="TLastLogin_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="TLastLogin_TUserID" Type="int" Nullable="true" />
-    <Property Name="TLastLogin_TS" Type="binary" StoreGeneratedPattern="Computed" Nullable="false" MaxLength="8" />
-    <Property Name="TLastLogin_UserIP" Type="varchar" Nullable="true" MaxLength="30" />
+    <Property Name="TLastLogin_TS" Type="datetime" Nullable="false" />
+    <Property Name="TLastLogin_UserIP" Type="varchar" Nullable="false" MaxLength="30" />
+    <Property Name="TLastLogin_TUsers_id" Type="int" Nullable="false" />
+    <Property Name="TLastLogin_Success" Type="bit" Nullable="false" />
   </EntityType>
   <EntityType Name="TUsers">
     <Key>
@@ -31,19 +41,53 @@
     <Property Name="TUsers_email" Type="varchar" Nullable="false" MaxLength="100" />
     <Property Name="TUsers_passwd" Type="varchar" Nullable="false" MaxLength="128" />
     <Property Name="TUsers_desc" Type="varchar" Nullable="true" MaxLength="300" />
-    <Property Name="TUser_imie" Type="nvarchar(max)" Nullable="true" />
-    <Property Name="TUser_nazwisko" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="TUser_imie" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="TUser_nazwisko" Type="nvarchar(max)" Nullable="false" />
     <Property Name="TUser_lock" Type="bit" Nullable="false" />
   </EntityType>
-  <Association Name="FK__TLastLogi__TLast__1273C1CD">
-    <End Role="TUsers" Type="PTMessengerEntites.Store.TUsers" Multiplicity="0..1" />
+  <EntityType Name="TMessageSet">
+    <Key>
+      <PropertyRef Name="TMessage_id" />
+    </Key>
+    <Property Name="TMessage_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TMessage_text" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="TMessage_ts" Type="datetime" Nullable="false" />
+    <Property Name="TMessage_src" Type="int" Nullable="false" />
+    <Property Name="TMessage_dst" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="TLastLoginTUsers">
     <End Role="TLastLogin" Type="PTMessengerEntites.Store.TLastLogin" Multiplicity="*" />
+    <End Role="TUsers" Type="PTMessengerEntites.Store.TUsers" Multiplicity="1" />
     <ReferentialConstraint>
       <Principal Role="TUsers">
         <PropertyRef Name="TUsers_id" />
       </Principal>
       <Dependent Role="TLastLogin">
-        <PropertyRef Name="TLastLogin_TUserID" />
+        <PropertyRef Name="TLastLogin_TUsers_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="TUsersTMessage_src">
+    <End Role="TUsers" Type="PTMessengerEntites.Store.TUsers" Multiplicity="1" />
+    <End Role="TMessage" Type="PTMessengerEntites.Store.TMessageSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TUsers">
+        <PropertyRef Name="TUsers_id" />
+      </Principal>
+      <Dependent Role="TMessage">
+        <PropertyRef Name="TMessage_src" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="TUsersTMessage_dst">
+    <End Role="TUsers" Type="PTMessengerEntites.Store.TUsers" Multiplicity="1" />
+    <End Role="TMessage" Type="PTMessengerEntites.Store.TMessageSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TUsers">
+        <PropertyRef Name="TUsers_id" />
+      </Principal>
+      <Dependent Role="TMessage">
+        <PropertyRef Name="TMessage_dst" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -56,10 +100,11 @@
             <PropertyRef Name="TLastLogin_id" />
           </Key>
           <Property Name="TLastLogin_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TLastLogin_TUserID" Type="Int32" />
-          <Property Name="TLastLogin_TS" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
-          <Property Name="TLastLogin_UserIP" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="TUsers" Relationship="Self.FK__TLastLogi__TLast__1273C1CD" FromRole="TLastLogin" ToRole="TUsers" />
+          <Property Name="TLastLogin_TS" Type="DateTime" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Name="TLastLogin_UserIP" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="TLastLogin_TUsers_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="PTMessengerEntites.TLastLoginTUsers" FromRole="TLastLogin" ToRole="TUsers" />
+          <Property Name="TLastLogin_Success" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="TUsers">
           <Key>
@@ -69,31 +114,76 @@
           <Property Name="TUsers_login" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="TUsers_email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="TUsers_passwd" Type="String" MaxLength="128" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="TUsers_desc" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
-          <Property Name="TUser_imie" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="TUser_nazwisko" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TUsers_desc" Type="String" MaxLength="300" FixedLength="false" Unicode="false" Nullable="true" />
+          <Property Name="TUser_imie" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TUser_nazwisko" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="TUser_lock" Type="Boolean" Nullable="false" />
         </EntityType>
-        <Association Name="FK__TLastLogi__TLast__1273C1CD">
-          <End Role="TUsers" Type="Self.TUsers" Multiplicity="0..1" />
-          <End Role="TLastLogin" Type="Self.TLastLogin" Multiplicity="*" />
+        <EntityContainer Name="PTMessengerEntitiesModel" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="TLastLogin" EntityType="Self.TLastLogin" />
+          <EntitySet Name="TUsers" EntityType="Self.TUsers" />
+          <EntitySet Name="TMessageSet" EntityType="PTMessengerEntites.TMessage" />
+          <AssociationSet Name="TLastLoginTUsers" Association="PTMessengerEntites.TLastLoginTUsers">
+            <End Role="TLastLogin" EntitySet="TLastLogin" />
+            <End Role="TUsers" EntitySet="TUsers" />
+          </AssociationSet>
+          <AssociationSet Name="TUsersTMessage_src" Association="PTMessengerEntites.TUsersTMessage_src">
+            <End Role="TUsers" EntitySet="TUsers" />
+            <End Role="TMessage" EntitySet="TMessageSet" />
+          </AssociationSet>
+          <AssociationSet Name="TUsersTMessage_dst" Association="PTMessengerEntites.TUsersTMessage_dst">
+            <End Role="TUsers" EntitySet="TUsers" />
+            <End Role="TMessage" EntitySet="TMessageSet" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="TMessage">
+          <Key>
+            <PropertyRef Name="TMessage_id" />
+          </Key>
+          <Property Name="TMessage_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TMessage_text" Type="String" Nullable="false" />
+          <Property Name="TMessage_ts" Type="DateTime" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Name="TMessage_src" Type="Int32" Nullable="false" />
+          <Property Name="TMessage_dst" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="User_src" Relationship="PTMessengerEntites.TUsersTMessage_src" FromRole="TMessage" ToRole="TUsers" />
+          <NavigationProperty Name="User_dst" Relationship="PTMessengerEntites.TUsersTMessage_dst" FromRole="TMessage" ToRole="TUsers" />
+        </EntityType>
+        <Association Name="TLastLoginTUsers">
+          <End Type="PTMessengerEntites.TLastLogin" Role="TLastLogin" Multiplicity="*" />
+          <End Type="PTMessengerEntites.TUsers" Role="TUsers" Multiplicity="1" />
           <ReferentialConstraint>
             <Principal Role="TUsers">
               <PropertyRef Name="TUsers_id" />
             </Principal>
             <Dependent Role="TLastLogin">
-              <PropertyRef Name="TLastLogin_TUserID" />
+              <PropertyRef Name="TLastLogin_TUsers_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="PTMessengerEntitiesModel" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="TLastLogin" EntityType="Self.TLastLogin" />
-          <EntitySet Name="TUsers" EntityType="Self.TUsers" />
-          <AssociationSet Name="FK__TLastLogi__TLast__1273C1CD" Association="Self.FK__TLastLogi__TLast__1273C1CD">
-            <End Role="TUsers" EntitySet="TUsers" />
-            <End Role="TLastLogin" EntitySet="TLastLogin" />
-          </AssociationSet>
-        </EntityContainer>
+        <Association Name="TUsersTMessage_src">
+          <End Type="PTMessengerEntites.TUsers" Role="TUsers" Multiplicity="1" />
+          <End Type="PTMessengerEntites.TMessage" Role="TMessage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TUsers">
+              <PropertyRef Name="TUsers_id" />
+            </Principal>
+            <Dependent Role="TMessage">
+              <PropertyRef Name="TMessage_src" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="TUsersTMessage_dst">
+          <End Type="PTMessengerEntites.TUsers" Role="TUsers" Multiplicity="1" />
+          <End Type="PTMessengerEntites.TMessage" Role="TMessage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TUsers">
+              <PropertyRef Name="TUsers_id" />
+            </Principal>
+            <Dependent Role="TMessage">
+              <PropertyRef Name="TMessage_dst" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -104,9 +194,10 @@
       <EntityTypeMapping TypeName="IsTypeOf(PTMessengerEntites.TLastLogin)">
         <MappingFragment StoreEntitySet="TLastLogin">
           <ScalarProperty Name="TLastLogin_id" ColumnName="TLastLogin_id" />
-          <ScalarProperty Name="TLastLogin_TUserID" ColumnName="TLastLogin_TUserID" />
           <ScalarProperty Name="TLastLogin_TS" ColumnName="TLastLogin_TS" />
           <ScalarProperty Name="TLastLogin_UserIP" ColumnName="TLastLogin_UserIP" />
+          <ScalarProperty Name="TLastLogin_TUsers_id" ColumnName="TLastLogin_TUsers_id" />
+          <ScalarProperty Name="TLastLogin_Success" ColumnName="TLastLogin_Success" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -121,6 +212,17 @@
           <ScalarProperty Name="TUser_imie" ColumnName="TUser_imie" />
           <ScalarProperty Name="TUser_nazwisko" ColumnName="TUser_nazwisko" />
           <ScalarProperty Name="TUser_lock" ColumnName="TUser_lock" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TMessageSet">
+      <EntityTypeMapping TypeName="IsTypeOf(PTMessengerEntites.TMessage)">
+        <MappingFragment StoreEntitySet="TMessageSet">
+          <ScalarProperty Name="TMessage_id" ColumnName="TMessage_id" />
+          <ScalarProperty Name="TMessage_text" ColumnName="TMessage_text" />
+          <ScalarProperty Name="TMessage_ts" ColumnName="TMessage_ts" />
+          <ScalarProperty Name="TMessage_src" ColumnName="TMessage_src" />
+          <ScalarProperty Name="TMessage_dst" ColumnName="TMessage_dst" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
