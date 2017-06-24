@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 06/21/2017 20:43:40
+-- Date Created: 06/22/2017 22:38:32
 -- Generated from EDMX file: D:\=MAKING OF=\PT_MessengerServer\PT_MessengerServer\PTMessengerModel.edmx
 -- --------------------------------------------------
 
@@ -74,7 +74,8 @@ CREATE TABLE [dbo].[TMessageSet] (
     [TMessage_text] nvarchar(max)  NOT NULL,
     [TMessage_ts] datetime  NOT NULL,
     [TMessage_src] int  NOT NULL,
-    [TMessage_dst] int  NOT NULL
+    [TMessage_dst] int  NOT NULL,
+    [TMessage_deliver] bit  NOT NULL
 );
 GO
 

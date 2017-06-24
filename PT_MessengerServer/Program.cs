@@ -18,8 +18,8 @@ namespace PT_MessengerServer
         private bool online { get;set;}
         private IPAddress ipAdd { get;set;}
 
-        public X509Certificate2 cert { get;set;} 
-
+        public X509Certificate2 cert { get;set;}
+        public List<Client> listOfClients { get;set; }
 
         static void Main(string[] args)
         {
@@ -34,7 +34,7 @@ namespace PT_MessengerServer
             port = 8510;
             server=new TcpListener(ipAdd, port);
             cert = new X509Certificate2("messenger.pfx", "PT_Messenger");
-
+            listOfClients = new List<Client>();
             try
             {
                 server.Start();
@@ -55,7 +55,7 @@ namespace PT_MessengerServer
                 
                 TcpClient tcpClient = server.AcceptTcpClient();
                 Client client = new Client(this,tcpClient);
-                
+            
             }
         }
     }

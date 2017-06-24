@@ -47,6 +47,7 @@ namespace PT_MessengerServer
                     binRead = new BinaryReader(ssl_stream, Encoding.UTF8);
                     binWrite = new BinaryWriter(ssl_stream, Encoding.UTF8);
                     Console.WriteLine("{0} Polaczono z {1}", DateTime.Now, tcp_client.Client.RemoteEndPoint.ToString());
+                    program.listOfClients.Add(this);
                 }
                 catch
                 {
@@ -82,6 +83,15 @@ namespace PT_MessengerServer
                             case "SEARCH_PERSON":
                                 searchPerson();
                                 break;
+                            case "HOW_MANY":
+                                howMany();
+                                break;
+                            case "MSG":
+                                getMsg();
+                                break;
+                            case "ANY_MSG":
+                                setMsg();
+                                break;
                             default:
                                 break;
                         }
@@ -92,6 +102,7 @@ namespace PT_MessengerServer
             }
             catch
             {
+                this.program.listOfClients.Remove(this);
                 Console.WriteLine("{0} Kończenie polaczenia z {1}", DateTime.Now, tcp_client.Client.RemoteEndPoint.ToString());
             }
             finally
@@ -113,6 +124,7 @@ namespace PT_MessengerServer
                 foreach(var r in users)
                     Console.WriteLine(r.ToString());
             }
+            
         }
         public void registration()
         {
@@ -390,6 +402,102 @@ namespace PT_MessengerServer
                     Console.WriteLine("{0} {1}", DateTime.Now, ex);
                 }
             }
+        }
+        public void getMsg()
+        {
+            string dst_login = "";
+            try
+            {
+                TMessage tmpMess = new TMessage();
+                dst_login = binRead.ReadString();
+                tmpMess.TMessage_text = binRead.ReadString();
+                string date = binRead.ReadString();
+                tmpMess.TMessage_ts = DateTime.Parse(date);
+                tmpMess.TMessage_deliver = false;
+                try
+                {
+                    using (var dc = new PTMessengerEntitiesModel())
+                    {
+                        tmpMess.TMessage_src = dc.TUsers.Where(u => u.TUsers_login == this.login)
+                                                             .Select(u=>u.TUsers_id).First();
+                        tmpMess.TMessage_dst = dc.TUsers.Where(u => u.TUsers_login == dst_login)
+                                                             .Select(u=>u.TUsers_id).First();
+                        dc.TMessageSet.Add(tmpMess);
+                        dc.SaveChanges();
+                    }
+                    binWrite.Write("MSG_ACCEPT"); 
+                    //setMsg(tmpMess); 
+                }
+                catch (DbEntityValidationException dbEx)
+                {
+                    foreach (var validationErrors in dbEx.EntityValidationErrors)
+                    {
+                        foreach (var validationError in validationErrors.ValidationErrors)
+                        {
+                            Console.WriteLine("Property: {0} Error: {1}",
+                                                    validationError.PropertyName,
+                                                    validationError.ErrorMessage);
+                        }
+                    }
+                    
+                }
+            }
+            catch
+            {
+                binWrite.Write("MSG_DISACCEPT");
+                Console.WriteLine("{0} Nie udało się pobrać wiadomości od {1}", DateTime.Now, dst_login);
+            }
+            finally
+            {
+                binWrite.Flush();
+            }
+            
+        }
+        public void setMsg()
+        {
+            try
+            {
+                List<TMessage> tmessageList;
+                using (var dc = new PTMessengerEntitiesModel())
+                {
+                    tmessageList = dc.TMessageSet.Where(x => x.User_dst.TUsers_login == this.login && x.TMessage_deliver == false).ToList();
+
+                    if (tmessageList.Count > 0)
+                    {
+                        binWrite.Write("NEW_MSG");
+                    }
+                    else
+                    {
+                        binWrite.Write("NO_MSG");
+                        return;
+                    }
+
+                    binWrite.Write(tmessageList.Count);
+                    foreach (var v in tmessageList)
+                    {
+                        binWrite.Write(v.User_src.TUsers_login);
+                        binWrite.Write(v.TMessage_text);
+                        binWrite.Write(v.TMessage_ts.ToString());
+                        v.TMessage_deliver = true;
+                        dc.Entry(v).State = System.Data.Entity.EntityState.Modified;
+                    }
+                    dc.SaveChanges();
+                    Console.WriteLine("{0} Wysłano {1} wiadomosci do {2}",DateTime.Now,tmessageList.Count,this.login);
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("{0} {1}", DateTime.Now, ex);
+            }
+            
+            
+            
+            
+        }
+        public void howMany()
+        {
+            binWrite.Write(this.program.listOfClients.Count);
+            binWrite.Flush();
         }
         public void conn_check()
         {

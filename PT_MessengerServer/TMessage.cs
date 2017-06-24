@@ -19,6 +19,7 @@ namespace PT_MessengerServer
         public System.DateTime TMessage_ts { get; set; }
         public int TMessage_src { get; set; }
         public int TMessage_dst { get; set; }
+        public bool TMessage_deliver { get; set; }
     
         public virtual TUsers User_src { get; set; }
         public virtual TUsers User_dst { get; set; }

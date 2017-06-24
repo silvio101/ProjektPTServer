@@ -54,6 +54,7 @@
     <Property Name="TMessage_ts" Type="datetime" Nullable="false" />
     <Property Name="TMessage_src" Type="int" Nullable="false" />
     <Property Name="TMessage_dst" Type="int" Nullable="false" />
+    <Property Name="TMessage_deliver" Type="bit" Nullable="false" />
   </EntityType>
   <Association Name="TLastLoginTUsers">
     <End Role="TLastLogin" Type="PTMessengerEntites.Store.TLastLogin" Multiplicity="*" />
@@ -147,6 +148,7 @@
           <Property Name="TMessage_dst" Type="Int32" Nullable="false" />
           <NavigationProperty Name="User_src" Relationship="PTMessengerEntites.TUsersTMessage_src" FromRole="TMessage" ToRole="TUsers" />
           <NavigationProperty Name="User_dst" Relationship="PTMessengerEntites.TUsersTMessage_dst" FromRole="TMessage" ToRole="TUsers" />
+          <Property Name="TMessage_deliver" Type="Boolean" Nullable="false" />
         </EntityType>
         <Association Name="TLastLoginTUsers">
           <End Type="PTMessengerEntites.TLastLogin" Role="TLastLogin" Multiplicity="*" />
@@ -223,6 +225,7 @@
           <ScalarProperty Name="TMessage_ts" ColumnName="TMessage_ts" />
           <ScalarProperty Name="TMessage_src" ColumnName="TMessage_src" />
           <ScalarProperty Name="TMessage_dst" ColumnName="TMessage_dst" />
+          <ScalarProperty Name="TMessage_deliver" ColumnName="TMessage_deliver" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
